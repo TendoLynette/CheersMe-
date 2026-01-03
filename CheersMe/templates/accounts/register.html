@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - CheersMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        padding: 50px;
+        max-width: 550px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .auth-header h1 {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .auth-header p {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .brand-logo {
+        font-size: 3rem;
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        border-radius: 15px;
+        padding: 15px 20px;
+        border: 2px solid #e0e0e0;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #4ECDC4;
+        box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+    }
+    
+    .btn-register {
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        border: none;
+        padding: 15px;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        width: 100%;
+        margin-top: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        color: white;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .login-link a {
+        color: #FF6B6B;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 8px;
+    }
+    
+    .password-requirements {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .password-requirements ul {
+        margin: 5px 0 0 0;
+        padding-left: 20px;
+    }
+    
+    .password-requirements li {
+        margin: 5px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="brand-logo">
+                <i class="fas fa-glass-cheers"></i>
+            </div>
+            <h1>Join CheersMe!</h1>
+            <p>Create an account to discover amazing events</p>
+        </div>
+        
+        <form method="post" id="registrationForm">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user"></i> First Name
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="text-danger mt-2">
+                            {{ form.first_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user"></i> Last Name
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="text-danger mt-2">
+                            {{ form.last_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.email.id_for_label }}" class="form-label">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                    <i class="fas fa-phone"></i> Phone Number (Optional)
+                </label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.phone_number.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.password1.id_for_label }}" class="form-label">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.password1.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.password2.id_for_label }}" class="form-label">
+                    <i class="fas fa-lock"></i> Confirm Password
+                </label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="text-danger mt-2">
+                        {{ form.password2.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="password-requirements">
+                <strong>Password Requirements:</strong>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Must contain letters and numbers</li>
+                    <li>Cannot be too similar to your personal information</li>
+                    <li>Cannot be a commonly used password</li>
+                </ul>
+            </div>
+            
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <button type="submit" class="btn btn-register">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? 
+            <a href="{% url 'accounts:login' %}">
+                Login <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add visual feedback for password strength
+    document.getElementById('id_password1').addEventListener('input', function(e) {
+        const password = e.target.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[!@#$%^&*]/.test(password)) strength++;
+        
+        // You can add visual indicator here if needed
+    });
+</script>
+{% endblock %}

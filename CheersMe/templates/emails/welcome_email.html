@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CheersMe</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+        .email-header .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        .email-body {
+            padding: 40px 30px;
+        }
+        .email-body h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .email-body p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        .features {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .feature-item {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .feature-item::before {
+            content: "✓";
+            color: #4ECDC4;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .email-footer {
+            background: #2C3E50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .email-footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <div class="icon">🎉</div>
+            <h1>Welcome to CheersMe!</h1>
+        </div>
+        
+        <div class="email-body">
+            <h2>Hi {{ user.first_name }}! 👋</h2>
+            
+            <p>We're thrilled to have you join the CheersMe community! You've just taken the first step towards discovering amazing events and experiences around you.</p>
+            
+            <p>With CheersMe, you can:</p>
+            
+            <div class="features">
+                <div class="feature-item">Discover exciting events near you</div>
+                <div class="feature-item">Get exclusive drink and food deals</div>
+                <div class="feature-item">Book tickets for concerts, parties, and more</div>
+                <div class="feature-item">Save your favorite events</div>
+                <div class="feature-item">Get personalized recommendations</div>
+                <div class="feature-item">Never miss out on what's happening</div>
+            </div>
+            
+            <p style="text-align: center;">
+                <a href="http://127.0.0.1:8000/dashboard/" class="cta-button">
+                    Start Exploring Events
+                </a>
+            </p>
+            
+            <p><strong>Here are some tips to get started:</strong></p>
+            <ul>
+                <li>Complete your profile to get better event recommendations</li>
+                <li>Enable location services to find events near you</li>
+                <li>Follow your favorite organizers and venues</li>
+                <li>Turn on notifications to never miss an event</li>
+            </ul>
+            
+            <p>If you have any questions, feel free to reach out to our support team. We're here to help!</p>
+            
+            <p>Cheers to great experiences! 🥂</p>
+            
+            <p>
+                <strong>The CheersMe Team</strong><br>
+                <em>Making every moment memorable</em>
+            </p>
+        </div>
+        
+        <div class="email-footer">
+            <div class="social-links">
+                <a href="#">📘</a>
+                <a href="#">📷</a>
+                <a href="#">🐦</a>
+            </div>
+            <p>&copy; 2024 CheersMe. All rights reserved.</p>
+            <p>Kampala, Uganda</p>
+            <p style="font-size: 12px; color: #95a5a6;">
+                You received this email because you signed up for CheersMe.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

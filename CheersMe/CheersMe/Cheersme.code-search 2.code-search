@@ -1,0 +1,19 @@
+# Query: Cheersme
+
+8 results - 4 files
+
+CheersMe\CheersMe\settings.py:
+  48: ROOT_URLCONF = 'CheersMe.urls'
+  67: WSGI_APPLICATION = 'CheersMe.wsgi.application'
+  73:         'NAME': config('DATABASE_NAME', default='CheersMe_db'),
+
+CheersMe\CheersMe\wsgi.py:
+   2: WSGI config for CheersMe project.
+  14: os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CheersMe.settings')
+
+CheersMe\templates\base.html:
+    6:     <title>{% block title %}CheersMe - Discover Amazing Events{% endblock %}</title>
+  109:                 <i class="fas fa-glass-cheers"></i> CheersMe
+
+CheersMe\templates\accounts\login.html:
+  4: {% block title %}Login - CheersMe{% endblock %}
