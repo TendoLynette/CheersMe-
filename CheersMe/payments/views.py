@@ -5,20 +5,30 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from events.models import Event
-from tickets.models import TicketType, Order, OrderItem, Ticket
-from notifications.models import Notification
+from CheersMe.events.models import Event
+from CheersMe.tickets.models import TicketType, Order, OrderItem, Ticket
+from CheersMe.notifications.models import Notification
 from decimal import Decimal
 import stripe
 import json
+from django.db.models import F
+from django.db import transaction
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+with transaction.atomic():
+    order = Order.objects.create(...)
+    # create order items
+    # create tickets
+    # update ticket counts
+
 
 @login_required
 def checkout_view(request, event_id):
     event = get_object_or_404(Event, id=event_id, status='published')
     ticket_types = event.ticket_types.filter(is_active=True)
-    
+    ticket_types = TicketType.objects.filter(event=event, is_active=True)
+
     if request.method == 'POST':
         # Get selected tickets from form
         selected_tickets = []
@@ -97,10 +107,10 @@ def create_payment_intent(request):
     
     try:
         # Create Stripe payment intent
-        amount_cents = int(Decimal(checkout_data['total']) * 100)  # Convert to cents
+        amount= int(Decimal(checkout_data['total']))  # Convert to cents
         
         intent = stripe.PaymentIntent.create(
-            amount=amount_cents,
+            amount=amount,
             currency='ugx',  # Ugandan Shillings
             metadata={
                 'user_id': request.user.id,
@@ -147,7 +157,7 @@ def payment_success(request):
                 payment_method='stripe',
                 payment_intent_id=payment_intent_id,
                 email=request.user.email,
-                phone=request.user.phone_number or '',
+                phone='',
                 paid_at=timezone.now()
             )
             
@@ -175,8 +185,8 @@ def payment_success(request):
                     )
                 
                 # Update ticket type sold count
-                ticket_type.quantity_sold += ticket_data['quantity']
-                ticket_type.save()
+                ticket_type.quantity_sold = F('quantity_sold') + ticket_data['quantity']
+                ticket_type.save(update_fields=['quantity_sold'])
             
             # Update event capacity
             total_tickets = sum(item['quantity'] for item in checkout_data['tickets'])
@@ -238,7 +248,7 @@ def stripe_webhook(request):
 
 def handle_successful_payment(payment_intent):
     # Additional processing for successful payments
-    pass
+     print(f"Payment succeeded: {payment_intent['id']}")
 
 def handle_failed_payment(payment_intent):
     # Handle failed payments

@@ -1,5 +1,8 @@
 from django.contrib import admin
-# from .models import TicketType, Order, Ticket, OrderItem
+from .models import Ticket
 
-# Comment out all the admin classes for now
-# We'll add them back once the models are created
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ("user", "event", "price", "purchased_at", "is_used")
+    list_filter = ("is_used", "purchased_at")
+    search_fields = ("user__username", "event__title")
