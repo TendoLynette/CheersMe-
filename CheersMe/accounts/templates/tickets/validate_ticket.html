@@ -1,0 +1,444 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Validate Tickets - CheersMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    .validation-container {
+        max-width: 900px;
+        margin: 2rem auto;
+    }
+    
+    .scanner-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 2rem;
+    }
+    
+    .scanner-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .scanner-icon {
+        font-size: 4rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+    
+    .scanner-input-group {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .scanner-input {
+        flex: 1;
+        padding: 1.25rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 15px;
+        font-size: 1.125rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .scanner-input:focus {
+        outline: none;
+        border-color: var(--cyan-glow);
+        box-shadow: 0 0 0 4px rgba(0, 246, 255, 0.1);
+    }
+    
+    .btn-scan {
+        padding: 1.25rem 2rem;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .btn-scan:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .result-card {
+        padding: 2rem;
+        border-radius: 16px;
+        margin-top: 2rem;
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .result-success {
+        background: rgba(198, 225, 44, 0.1);
+        border-left: 4px solid var(--lemon-lime);
+    }
+    
+    .result-error {
+        background: rgba(220, 38, 38, 0.1);
+        border-left: 4px solid #DC2626;
+    }
+    
+    .result-warning {
+        background: rgba(242, 149, 0, 0.1);
+        border-left: 4px solid var(--golden-orange);
+    }
+    
+    .result-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .result-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .result-details {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .detail-value {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    .event-select-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+    }
+    
+    .event-option {
+        padding: 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .event-option:hover {
+        border-color: var(--cyan-glow);
+        background: rgba(0, 246, 255, 0.05);
+    }
+    
+    .event-option.active {
+        border-color: var(--cyan-glow);
+        background: rgba(0, 246, 255, 0.1);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .stat-box {
+        background: linear-gradient(135deg, rgba(0, 246, 255, 0.05) 0%, rgba(176, 55, 148, 0.05) 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="validation-container">
+    <div class="scanner-card">
+        <div class="scanner-header">
+            <div class="scanner-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h1>Ticket Validation</h1>
+            <p style="color: var(--text-secondary);">Scan or enter ticket number to check in attendees</p>
+        </div>
+        
+        <!-- Event Selection -->
+        {% if events %}
+        <div class="event-select-card">
+            <label style="font-weight: 600; margin-bottom: 1rem; display: block;">Select Event:</label>
+            <select id="eventSelect" class="form-control" style="font-size: 1rem;">
+                <option value="">Choose an event...</option>
+                {% for event in events %}
+                <option value="{{ event.id }}">
+                    {{ event.title }} - {{ event.start_date|date:"M d, Y" }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+        
+        <!-- Scanner Input -->
+        <div class="scanner-input-group">
+            <input 
+                type="text" 
+                id="ticketInput" 
+                class="scanner-input" 
+                placeholder="Enter or scan ticket number"
+                autocomplete="off"
+            >
+            <button class="btn-scan" onclick="validateTicket()" id="scanBtn">
+                <i class="fas fa-check-circle"></i>
+                Validate
+            </button>
+        </div>
+        
+        <div style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">
+            <small>
+                <i class="fas fa-info-circle"></i>
+                Press Enter or click Validate to check in the ticket
+            </small>
+        </div>
+        
+        <!-- Result Display -->
+        <div id="resultContainer"></div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div id="statsContainer"></div>
+</div>
+
+<script>
+let currentEventId = null;
+
+// Event selection
+document.getElementById('eventSelect')?.addEventListener('change', function(e) {
+    currentEventId = e.target.value;
+    if (currentEventId) {
+        loadEventStats(currentEventId);
+    }
+});
+
+// Ticket input - submit on Enter
+document.getElementById('ticketInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        validateTicket();
+    }
+});
+
+// Auto-focus on input
+document.getElementById('ticketInput').focus();
+
+function validateTicket() {
+    const ticketNumber = document.getElementById('ticketInput').value.trim();
+    
+    if (!ticketNumber) {
+        showResult('error', 'Please enter a ticket number');
+        return;
+    }
+    
+    // Show loading
+    const btn = document.getElementById('scanBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Validating...';
+    
+    // Make API call
+    fetch(`/tickets/check-in/${ticketNumber}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showResult('success', data.message, data.ticket_info);
+            playSuccessSound();
+        } else {
+            const type = data.ticket_info ? 'warning' : 'error';
+            showResult(type, data.message, data.ticket_info);
+            playErrorSound();
+        }
+        
+        // Refresh stats if event selected
+        if (currentEventId) {
+            loadEventStats(currentEventId);
+        }
+    })
+    .catch(error => {
+        showResult('error', 'Connection error. Please try again.');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        // Reset button
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Validate';
+        
+        // Clear input and refocus
+        document.getElementById('ticketInput').value = '';
+        document.getElementById('ticketInput').focus();
+    });
+}
+
+function showResult(type, message, ticketInfo = null) {
+    const container = document.getElementById('resultContainer');
+    
+    let iconClass, icon;
+    if (type === 'success') {
+        iconClass = 'result-success';
+        icon = '<i class="fas fa-check-circle" style="color: var(--lemon-lime);"></i>';
+    } else if (type === 'warning') {
+        iconClass = 'result-warning';
+        icon = '<i class="fas fa-exclamation-triangle" style="color: var(--golden-orange);"></i>';
+    } else {
+        iconClass = 'result-error';
+        icon = '<i class="fas fa-times-circle" style="color: #DC2626;"></i>';
+    }
+    
+    let detailsHtml = '';
+    if (ticketInfo) {
+        detailsHtml = `
+            <div class="result-details">
+                <div class="detail-row">
+                    <span class="detail-label">Ticket Number:</span>
+                    <span class="detail-value">${ticketInfo.ticket_number}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Attendee:</span>
+                    <span class="detail-value">${ticketInfo.attendee}</span>
+                </div>
+                ${ticketInfo.attendee_email ? `
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${ticketInfo.attendee_email}</span>
+                </div>
+                ` : ''}
+                <div class="detail-row">
+                    <span class="detail-label">Ticket Type:</span>
+                    <span class="detail-value">${ticketInfo.ticket_type}</span>
+                </div>
+                ${ticketInfo.checked_in_at ? `
+                <div class="detail-row">
+                    <span class="detail-label">Checked In At:</span>
+                    <span class="detail-value">${new Date(ticketInfo.checked_in_at).toLocaleString()}</span>
+                </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    container.innerHTML = `
+        <div class="result-card ${iconClass}">
+            <div class="result-icon">${icon}</div>
+            <div class="result-title">${message}</div>
+            ${detailsHtml}
+        </div>
+    `;
+}
+
+function loadEventStats(eventId) {
+    // This would load live stats for the selected event
+    // For now, just show placeholder
+    const container = document.getElementById('statsContainer');
+    container.innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number" id="totalTickets">-</div>
+                <div class="stat-label">Total Tickets</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="checkedIn">-</div>
+                <div class="stat-label">Checked In</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="remaining">-</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="percentage">-</div>
+                <div class="stat-label">Check-in Rate</div>
+            </div>
+        </div>
+    `;
+}
+
+function playSuccessSound() {
+    // Optional: Play success sound
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZWA0PUK3n77BjGwU7k9v0yoA0BhtwwO/glVELDl2r6O6kVxMPTqzn8ahlHAU5j9f0zYM3Bx9yvvHkm1gPDliv5/OqYhwGOZPb9cmCNQgdb8Dv4JVSCw5dq+juolYTD0+r5/GoZBsGOpHX9M2DNQcfcsDv4JlWEA5Yr+fzqmIcBTqT2/XJgjUHHG/A7+CVUgwOXavp76JWFBBPq+fxqGQbBTuR1/TNgzYHH3LA7+CZVhAOV6/n86pjHAY7k9v0yoM2CB1vwO/glVUMDF6r6e+iVxQPT6vn8alka4d6H+AA==');
+    audio.play().catch(e => {});
+}
+
+function playErrorSound() {
+    // Optional: Play error sound
+}
+
+// Auto-refresh ticket input field every few seconds
+setInterval(() => {
+    if (document.getElementById('ticketInput').value === '') {
+        document.getElementById('ticketInput').focus();
+    }
+}, 5000);
+</script>
+{% endblock %}

@@ -8,7 +8,7 @@ from django.utils.html import strip_tags
 from django.conf import settings
 from .forms import CustomUserRegistrationForm, CustomUserLoginForm, UserProfileForm
 from .models import CustomUser
-from notifications.models import Notification
+from CheersMe.notifications.models import Notification
 
 def register_view(request):
     if request.user.is_authenticated:

@@ -1,0 +1,483 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - CheersMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    .event-hero {
+        position: relative;
+        height: 500px;
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+    }
+    
+    .event-hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .event-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 3rem;
+    }
+    
+    .event-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    
+    .event-meta-pills {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+    
+    .meta-pill {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .event-content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .event-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+    
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--raspberry-plum) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+    
+    .info-content h4 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin: 0 0 0.25rem 0;
+    }
+    
+    .info-content p {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    
+    .ticket-card {
+        background: linear-gradient(135deg, rgba(0, 246, 255, 0.05) 0%, rgba(176, 55, 148, 0.05) 100%);
+        border: 2px solid transparent;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .ticket-card:hover {
+        border-color: var(--cyan-glow);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .ticket-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .ticket-name {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    
+    .ticket-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .ticket-description {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .ticket-quantity {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .btn-book {
+        width: 100%;
+        padding: 1.125rem;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-size: 1.125rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-book:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .review-card {
+        padding: 1.5rem;
+        background: white;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        border: 1px solid #E5E7EB;
+    }
+    
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .review-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--gradient-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+    }
+    
+    .stars {
+        color: var(--golden-orange);
+    }
+    
+    @media (max-width: 768px) {
+        .event-content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .event-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Event Hero -->
+<div class="event-hero">
+    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" class="event-hero-image">
+    <div class="event-hero-overlay">
+        <div class="event-meta-pills">
+            <span class="meta-pill">
+                <i class="fas fa-tag"></i>
+                {{ event.category.get_name_display }}
+            </span>
+            {% if distance %}
+            <span class="meta-pill">
+                <i class="fas fa-location-arrow"></i>
+                {{ distance }} km away
+            </span>
+            {% endif %}
+            {% if event.is_free %}
+            <span class="meta-pill" style="background: var(--lemon-lime);">
+                <i class="fas fa-gift"></i>
+                FREE
+            </span>
+            {% endif %}
+        </div>
+        <h1 class="event-title">{{ event.title }}</h1>
+        <div class="event-meta-pills">
+            <span class="meta-pill">
+                <i class="fas fa-eye"></i>
+                {{ event.views }} views
+            </span>
+            {% if average_rating %}
+            <span class="meta-pill">
+                <i class="fas fa-star"></i>
+                {{ average_rating|floatformat:1 }} ({{ total_reviews }} reviews)
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="event-content-grid">
+    <!-- Left Column: Event Details -->
+    <div>
+        <!-- Description -->
+        <div class="event-section">
+            <h2 class="section-title">About This Event</h2>
+            <p style="line-height: 1.8; color: var(--text-secondary);">{{ event.description }}</p>
+        </div>
+        
+        <!-- Event Information -->
+        <div class="event-section">
+            <h2 class="section-title">Event Details</h2>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Date</h4>
+                    <p>{{ event.start_date|date:"l, F d, Y" }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Time</h4>
+                    <p>{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Venue</h4>
+                    <p>{{ event.venue_name }}</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">{{ event.address }}, {{ event.city }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Capacity</h4>
+                    <p>{{ event.remaining_capacity }} of {{ event.total_capacity }} spots remaining</p>
+                </div>
+            </div>
+            
+            {% if event.has_food or event.has_drinks %}
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="info-content">
+                    <h4>Food & Drinks</h4>
+                    {% if event.has_food %}
+                    <p>🍕 {{ event.food_deals }}</p>
+                    {% endif %}
+                    {% if event.has_drinks %}
+                    <p>🍹 {{ event.drink_deals }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Reviews Section -->
+        {% if reviews %}
+        <div class="event-section">
+            <h2 class="section-title">Reviews ({{ total_reviews }})</h2>
+            
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        {{ review.user.first_name.0 }}{{ review.user.last_name.0 }}
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-weight: 600;">{{ review.user.get_full_name }}</h4>
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% if review.comment %}
+                <p style="color: var(--text-secondary); margin: 0;">{{ review.comment }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Right Column: Booking -->
+    <div>
+        <div class="event-section" style="position: sticky; top: 2rem;">
+            <h2 class="section-title">Get Tickets</h2>
+            
+            {% if ticket_types %}
+                {% for ticket_type in ticket_types %}
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-name">{{ ticket_type.name }}</span>
+                        <span class="ticket-price">
+                            {% if event.is_free %}FREE{% else %}UGX {{ ticket_type.price|floatformat:0 }}{% endif %}
+                        </span>
+                    </div>
+                    {% if ticket_type.description %}
+                    <p class="ticket-description">{{ ticket_type.description }}</p>
+                    {% endif %}
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">
+                        <i class="fas fa-ticket-alt"></i>
+                        {{ ticket_type.remaining_tickets }} remaining
+                    </p>
+                </div>
+                {% endfor %}
+                
+                <a href="{% url 'payments:checkout' event.id %}" class="btn-book">
+                    <i class="fas fa-shopping-cart"></i>
+                    Book Now
+                </a>
+            {% else %}
+                <p class="text-center" style="color: var(--text-secondary);">
+                    Tickets not yet available
+                </p>
+            {% endif %}
+            
+            <!-- Favorite Button -->
+            <button 
+                class="btn btn-outline-primary w-100 mt-3" 
+                onclick="toggleFavorite('{{ event.id }}')"
+                id="favoriteBtn"
+            >
+                <i class="fas fa-heart {% if is_favorited %}text-danger{% endif %}"></i>
+                {% if is_favorited %}Remove from{% else %}Add to{% endif %} Favorites
+            </button>
+            
+            <!-- Share Buttons -->
+            <div class="mt-3">
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Share this event:</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm" style="background: #1877F2; color: white;">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="btn btn-sm" style="background: #1DA1F2; color: white;">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="btn btn-sm" style="background: #25D366; color: white;">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Similar Events -->
+{% if similar_events %}
+<div class="mt-5">
+    <h2 class="section-title">Similar Events</h2>
+    <div class="events-grid">
+        {% for similar_event in similar_events %}
+        <a href="{% url 'events:detail' similar_event.slug %}" class="event-card">
+            <div class="event-image-container">
+                <img src="{{ similar_event.featured_image.url }}" alt="{{ similar_event.title }}" class="event-image">
+                <span class="event-category-badge">{{ similar_event.category.get_name_display }}</span>
+            </div>
+            <div class="event-content">
+                <span class="event-price">
+                    {% if similar_event.is_free %}FREE{% else %}UGX {{ similar_event.base_price|floatformat:0 }}{% endif %}
+                </span>
+                <h3 class="event-title">{{ similar_event.title }}</h3>
+                <div class="event-meta">
+                    <div class="event-meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>{{ similar_event.start_date|date:"M d" }}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+function toggleFavorite(eventId) {
+    fetch(`/events/favorite/toggle/${eventId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

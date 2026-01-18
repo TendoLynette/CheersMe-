@@ -2,9 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.utils import timezone
-from events.models import Event, EventCategory, EventFavorite, EventReview
-from tickets.models import Ticket, Order
-from notifications.models import Notification
+from CheersMe.events.models import Event, EventCategory, EventFavorite, EventReview
+from CheersMe.tickets.models import Ticket, Order
+from CheersMe.notifications.models import Notification
 from django.contrib import messages
 from math import radians, cos, sin, asin, sqrt
 

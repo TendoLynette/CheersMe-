@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ticket {{ ticket.ticket_number }} - CheersMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ticket-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+    
+    .ticket-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+    }
+    
+    .ticket-header {
+        background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--raspberry-plum) 100%);
+        padding: 2rem;
+        color: white;
+        position: relative;
+    }
+    
+    .ticket-status-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+    }
+    
+    .ticket-status-badge.valid {
+        background: var(--lemon-lime);
+        color: var(--text-primary);
+    }
+    
+    .ticket-status-badge.used {
+        background: var(--golden-orange);
+        color: white;
+    }
+    
+    .ticket-status-badge.cancelled {
+        background: #DC2626;
+        color: white;
+    }
+    
+    .ticket-number {
+        font-size: 1.125rem;
+        font-weight: 600;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+    
+    .event-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+    
+    .ticket-type {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    
+    .ticket-body {
+        padding: 2rem;
+    }
+    
+    .ticket-section {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .section-title i {
+        color: var(--cyan-glow);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .info-value {
+        font-size: 1rem;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    .qr-code-section {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(0, 246, 255, 0.05) 0%, rgba(176, 55, 148, 0.05) 100%);
+        border-radius: 16px;
+    }
+    
+    .qr-code-image {
+        width: 250px;
+        height: 250px;
+        margin: 0 auto 1rem;
+        border: 4px solid var(--cyan-glow);
+        border-radius: 16px;
+        padding: 1rem;
+        background: white;
+    }
+    
+    .qr-instructions {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .btn-action {
+        flex: 1;
+        min-width: 200px;
+        padding: 1rem;
+        border-radius: 15px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .btn-primary-action {
+        background: var(--gradient-primary);
+        color: white;
+    }
+    
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    
+    .btn-secondary-action {
+        background: white;
+        color: var(--text-primary);
+        border: 2px solid #E5E7EB;
+    }
+    
+    .btn-secondary-action:hover {
+        border-color: var(--cyan-glow);
+        color: var(--cyan-glow);
+    }
+    
+    .warning-box {
+        background: rgba(242, 149, 0, 0.1);
+        border-left: 4px solid var(--golden-orange);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+    
+    .success-box {
+        background: rgba(198, 225, 44, 0.1);
+        border-left: 4px solid var(--lemon-lime);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .event-title {
+            font-size: 1.5rem;
+        }
+        
+        .qr-code-image {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ticket-container">
+    <!-- Ticket Card -->
+    <div class="ticket-card">
+        <!-- Header -->
+        <div class="ticket-header">
+            <span class="ticket-status-badge {{ ticket.status }}">
+                {% if ticket.checked_in %}
+                    ✓ Used
+                {% elif ticket.status == 'valid' %}
+                    ✓ Valid
+                {% elif ticket.status == 'cancelled' %}
+                    ✗ Cancelled
+                {% else %}
+                    {{ ticket.get_status_display }}
+                {% endif %}
+            </span>
+            
+            <div class="ticket-number">Ticket #{{ ticket.ticket_number }}</div>
+            <h1 class="event-title">{{ ticket.event.title }}</h1>
+            <span class="ticket-type">{{ ticket.ticket_type.name }}</span>
+        </div>
+        
+        <!-- Body -->
+        <div class="ticket-body">
+            <!-- Event Information -->
+            <div class="ticket-section">
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Event Details
+                </h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Date</span>
+                        <span class="info-value">{{ ticket.event.start_date|date:"l, F d, Y" }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Time</span>
+                        <span class="info-value">{{ ticket.event.start_time|time:"g:i A" }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Venue</span>
+                        <span class="info-value">{{ ticket.event.venue_name }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Location</span>
+                        <span class="info-value">{{ ticket.event.city }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Attendee Information -->
+            <div class="ticket-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Attendee Information
+                </h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">{{ ticket.attendee_name }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ ticket.attendee_email }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Order Number</span>
+                        <span class="info-value">{{ ticket.order.order_number }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Purchase Date</span>
+                        <span class="info-value">{{ ticket.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QR Code -->
+            {% if is_valid %}
+            <div class="ticket-section">
+                <h3 class="section-title">
+                    <i class="fas fa-qrcode"></i>
+                    Your QR Code
+                </h3>
+                
+                <div class="qr-code-section">
+                    {% if ticket.qr_code %}
+                    <img src="{{ ticket.qr_code.url }}" alt="QR Code" class="qr-code-image">
+                    {% else %}
+                    <div class="qr-code-image" style="display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-qrcode" style="font-size: 100px; color: var(--cyan-glow);"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <p class="qr-instructions">
+                        <strong>Show this QR code at the venue entrance</strong><br>
+                        Your ticket will be scanned for check-in
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Check-in Status -->
+            {% if ticket.checked_in %}
+            <div class="success-box">
+                <strong><i class="fas fa-check-circle"></i> Checked In</strong><br>
+                This ticket was used on {{ ticket.checked_in_at|date:"F d, Y at g:i A" }}
+            </div>
+            {% endif %}
+            
+            {% if ticket.status == 'cancelled' %}
+            <div class="warning-box">
+                <strong><i class="fas fa-exclamation-triangle"></i> Cancelled</strong><br>
+                This ticket has been cancelled and is no longer valid.
+            </div>
+            {% endif %}
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{% url 'tickets:download_pdf' ticket.id %}" class="btn-action btn-primary-action">
+                    <i class="fas fa-download"></i>
+                    Download PDF
+                </a>
+                
+                <a href="{% url 'tickets:email_ticket' ticket.id %}" class="btn-action btn-secondary-action">
+                    <i class="fas fa-envelope"></i>
+                    Email Ticket
+                </a>
+                
+                <a href="{% url 'events:detail' ticket.event.slug %}" class="btn-action btn-secondary-action">
+                    <i class="fas fa-info-circle"></i>
+                    Event Details
+                </a>
+            </div>
+            
+            <!-- Important Notice -->
+            {% if is_valid %}
+            <div class="warning-box">
+                <strong><i class="fas fa-info-circle"></i> Important Notice</strong><br>
+                • Keep this ticket safe and don't share the QR code<br>
+                • Arrive at least 30 minutes before the event starts<br>
+                • This ticket is non-transferable<br>
+                • No refunds after check-in
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Back Button -->
+    <div style="margin-top: 2rem; text-align: center;">
+        <a href="{% url 'tickets:my_tickets' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i>
+            Back to My Tickets
+        </a>
+    </div>
+</div>
+
+<script>
+// Auto-refresh if ticket status might change
+{% if is_valid and not ticket.checked_in %}
+setInterval(function() {
+    fetch('{% url "tickets:ticket_status_api" ticket.id %}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.ticket.checked_in) {
+                location.reload();
+            }
+        });
+}, 30000); // Check every 30 seconds
+{% endif %}
+</script>
+{% endblock %}

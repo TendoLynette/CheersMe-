@@ -1,0 +1,8 @@
+<h1>My Tickets</h1>
+<ul>
+  {% for ticket in tickets %}
+    <li>{{ ticket.event.title }} - {{ ticket.purchase_date }}</li>
+  {% empty %}
+    <li>No tickets found.</li>
+  {% endfor %}
+</ul>
