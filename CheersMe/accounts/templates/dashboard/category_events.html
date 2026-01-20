@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<html>
+<head>
+    <title>Category Events</title>
+</head>
+
+<div class="container mt-5">
+
+    <h2 style="color:white;">{{ category.name }} Events</h2>
+
+    <div class="netflix-row">
+
+        <button class="netflix-arrow left" onclick="scrollRow('category', -1)">❮</button>
+        <button class="netflix-arrow right" onclick="scrollRow('category', 1)">❯</button>
+
+        <div class="netflix-slider" id="category">
+            {% for event in events %}
+            <div class="netflix-card">
+                <a href="{% url 'dashboard:event_detail' event.slug %}">
+                    <img src="{{ event.featured_image.url }}">
+                    <div class="netflix-overlay">
+                        <div class="netflix-title">{{ event.title }}</div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+function scrollRow(id, direction) {
+    const row = document.getElementById(id);
+    row.scrollBy({ left: direction * 300, behavior: 'smooth' });
+}
+</script>
+
+{% endblock %}

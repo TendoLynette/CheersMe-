@@ -1,3 +1,7 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
 <h1>My Tickets</h1>
 <ul>
   {% for ticket in tickets %}
@@ -6,3 +10,4 @@
     <li>No tickets found.</li>
   {% endfor %}
 </ul>
+{% endblock %}

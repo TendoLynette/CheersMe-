@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-import uuid
 
 
 class CustomUserManager(BaseUserManager):
@@ -19,33 +18,26 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('Superuser must have is_staff=True.'))
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Superuser must have is_superuser=True.'))
-
         return self.create_user(email, password, **extra_fields)
 
 
 class CustomUser(AbstractUser):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # DEFAULT BIGINT PRIMARY KEY (DO NOT DEFINE id FIELD)
 
     username = None
     email = models.EmailField(_('email address'), unique=True)
 
-    phone_number = models.CharField(max_length=20, blank=True)
-    location = models.CharField(max_length=100, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True, default='')
+    location = models.CharField(max_length=100, blank=True, default='')
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    bio = models.TextField(max_length=500, blank=True)
+    bio = models.TextField(max_length=500, blank=True, default='')
 
-    # Preferences
     preferred_categories = models.JSONField(default=list, blank=True)
     notification_preferences = models.JSONField(default=dict, blank=True)
 
-    # Account status
     email_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

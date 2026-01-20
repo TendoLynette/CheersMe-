@@ -104,3 +104,5 @@ def delete_account_view(request):
         return redirect('accounts:register')
     
     return render(request, 'accounts/delete_account.html')
+
+

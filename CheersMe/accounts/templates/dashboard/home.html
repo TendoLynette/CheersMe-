@@ -209,6 +209,7 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="container mt-4">
     <!-- Hero Section -->
     <div class="dashboard-hero">
@@ -229,7 +230,71 @@
     <div class="section-header">
         <h2>Browse Categories</h2>
     </div>
-    
+   <div class="netflix-row">
+    <h3>Recommended For You</h3>
+
+    <button class="netflix-arrow left" onclick="scrollRow('recommended', -1)">❮</button>
+    <button class="netflix-arrow right" onclick="scrollRow('recommended', 1)">❯</button>
+
+    <div class="netflix-slider" id="recommended">
+        {% for event in recommended_events %}
+        <div class="netflix-card">
+            <a href="{% url 'dashboard:event_detail' event.slug %}">
+                <img src="{{ event.featured_image.url }}" alt="{{ event.title }}">
+                <div class="netflix-overlay">
+                    <div class="netflix-title">{{ event.title }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="netflix-row">
+    <h3>🔥 Trending Now</h3>
+
+    <button class="netflix-arrow left" onclick="scrollRow('trending', -1)">❮</button>
+    <button class="netflix-arrow right" onclick="scrollRow('trending', 1)">❯</button>
+
+    <div class="netflix-slider" id="trending">
+        {% for event in upcoming_events %}
+        <div class="netflix-card">
+            <a href="{% url 'dashboard:event_detail' event.slug %}">
+                <img src="{{ event.featured_image.url }}">
+                <div class="netflix-overlay">
+                    <div class="netflix-title">{{ event.title }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% if nearby_events %}
+<div class="netflix-row">
+    <h3>📍 Near You</h3>
+
+    <button class="netflix-arrow left" onclick="scrollRow('nearby', -1)">❮</button>
+    <button class="netflix-arrow right" onclick="scrollRow('nearby', 1)">❯</button>
+
+    <div class="netflix-slider" id="nearby">
+        {% for event in nearby_events %}
+        <div class="netflix-card">
+            <a href="{% url 'dashboard:event_detail' event.slug %}">
+                <img src="{{ event.featured_image.url }}">
+                <div class="netflix-overlay">
+                    <div class="netflix-title">{{ event.title }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
     <div class="category-grid">
         {% for category in categories %}
         <a href="{% url 'dashboard:category_events' category.name %}" style="text-decoration: none; color: inherit;">
@@ -259,9 +324,22 @@
     <!-- Featured Events -->
     {% if featured_events %}
     <div class="section-header">
-        <h2>⭐ Featured Events</h2>
+                <h2>⭐ Featured Events</h2>
+
         <a href="{% url 'dashboard:search' %}" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
     </div>
+
+<div class="poster-row">
+{% for event in events %}
+<div class="poster-card">
+<img src="{{ event.poster.url }}" alt="{{ event.title }}">
+<div class="poster-info">
+<h4>{{ event.title }}</h4>
+<p>{{ event.short_description }}</p>
+</div>
+</div>
+{% endfor %}
+</div>
     
     <div class="row">
         {% for event in featured_events %}
@@ -378,4 +456,23 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
     }
 });
 </script>
+<script>
+function scrollRow(id, direction) {
+    const row = document.getElementById(id);
+    const scrollAmount = 300;
+    row.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+    });
+}
+
+/* Auto-slide effect */
+setInterval(() => {
+    const rows = document.querySelectorAll('.netflix-slider');
+    rows.forEach(row => {
+        row.scrollBy({ left: 1, behavior: 'smooth' });
+    });
+}, 50);
+</script>
+
 {% endblock %}

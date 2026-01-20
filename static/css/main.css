@@ -1,0 +1,199 @@
+:root {
+/* Your Official Palette */
+--sunbeam-yellow: #FFF600;
+--cyan-glow: #00F6FF;
+--raspberry-plum: #B03794;
+--golden-orange: #F29500;
+--lemon-lime: #C6E12C;
+
+
+--dark-bg: #0f1020;
+--card-bg: rgba(255,255,255,0.08);
+}
+
+
+* {
+font-family: 'Poppins', sans-serif;
+}
+
+body {
+background: radial-gradient(circle at top, #1a1b3a, #0f1020);
+min-height: 100vh;
+color: white;
+}
+
+
+/* NAVBAR */
+.cheers-navbar {
+background: rgba(15, 16, 32, 0.9);
+backdrop-filter: blur(10px);
+border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+
+.logo-img {
+height: 40px;
+}
+
+
+.logo-text {
+    font-size: 28px;
+font-weight: 700;
+background: linear-gradient(90deg, var(--cyan-glow), var(--sunbeam-yellow));
+-webkit-background-clip: text;
+color: transparent;
+}
+
+
+.logo-text span {
+color: var(--raspberry-plum);
+}
+
+
+.nav-link {
+color: #ddd !important;
+transition: 0.3s;
+}
+
+
+.nav-link:hover {
+color: var(--cyan-glow) !important;
+}
+
+
+/* PAGE CONTENT */
+.page-content {
+padding: 30px 20px;
+}
+
+
+/* EVENT POSTER (NETFLIX STYLE – WE’LL USE THIS LATER) */
+.event-poster {
+position: relative;
+border-radius: 12px;
+overflow: hidden;
+cursor: pointer;
+transition: transform 0.3s, box-shadow 0.3s;
+}
+.event-poster img {
+width: 100%;
+height: 280px;
+object-fit: cover;
+}
+
+
+.event-poster:hover {
+transform: scale(1.08);
+box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+
+.event-overlay {
+position: absolute;
+bottom: 0;
+width: 100%;
+padding: 15px;
+background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+
+/* ================= NETFLIX STYLE ROWS ================= */
+
+.netflix-row {
+    margin: 50px 0;
+    position: relative;
+}
+
+.netflix-row h3 {
+    color: white;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.netflix-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 20px;
+    scroll-behavior: smooth;
+}
+
+.netflix-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* CARD */
+.netflix-card {
+    min-width: 220px;
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.netflix-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Hover Zoom */
+.netflix-card:hover {
+    transform: scale(1.15);
+    z-index: 20;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+
+/* Dark Overlay */
+.netflix-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    display: flex;
+    align-items: flex-end;
+    padding: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.netflix-card:hover .netflix-overlay {
+    opacity: 1;
+}
+
+.netflix-title {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Arrows */
+.netflix-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.7);
+    border: none;
+    color: white;
+    font-size: 30px;
+    width: 50px;
+    height: 80px;
+    cursor: pointer;
+    z-index: 50;
+}
+
+.netflix-arrow.left {
+    left: 0;
+}
+
+.netflix-arrow.right {
+    right: 0;
+}
+
+.netflix-arrow:hover {
+    background: rgba(0,0,0,0.9);
+}
