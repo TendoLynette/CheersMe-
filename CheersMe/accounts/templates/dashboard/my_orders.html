@@ -1,7 +1,27 @@
-
 {% extends 'base.html' %}
-{% block content %}
+{% block title %}My Orders | CheersMe{% endblock %}
 
-    <h1>My Orders Page</h1>
-    <p>This page is working correctly 🎉</p>
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">🛒 My Orders</h2>
+
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white border-0 shadow-lg">
+                <div class="card-body">
+                    <h5>{{ order.event.title }}</h5>
+                    <p class="text-muted">Order #{{ order.id }}</p>
+                    <p>Total: UGX {{ order.total_price|floatformat:0 }}</p>
+                    <p>Status: <span class="badge bg-success">{{ order.status }}</span></p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-5">
+            You haven’t made any orders yet 🧾
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

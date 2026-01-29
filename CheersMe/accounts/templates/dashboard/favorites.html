@@ -1,7 +1,27 @@
-
 {% extends 'base.html' %}
-{% block content %}
+{% block title %}My Favorites | CheersMe{% endblock %}
 
-    <h1>My Favorites Page</h1>
-    <p>This page is working correctly 🎉</p>
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">❤️ My Favorites</h2>
+
+    <div class="row">
+        {% for event in favorite_events %}
+        <div class="col-md-4 mb-4">
+            <div class="netflix-card">
+                <a href="{% url 'dashboard:event_detail' event.slug %}">
+                    <img src="{{ event.featured_image.url }}">
+                    <div class="netflix-overlay">
+                        <div class="netflix-title">{{ event.title }}</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-5">
+            You haven’t added any favorites yet 💔
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

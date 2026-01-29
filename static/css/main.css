@@ -1,3 +1,5 @@
+
+
 :root {
 /* Your Official Palette */
 --sunbeam-yellow: #FFF600;
@@ -196,4 +198,179 @@ background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 
 .netflix-arrow:hover {
     background: rgba(0,0,0,0.9);
+}
+
+
+
+
+:root {
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255,255,255,0.7);
+
+  --shadow-sm: 0 4px 10px rgba(0,0,0,0.4);
+  --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+
+  --gradient-primary: linear-gradient(
+      135deg,
+      var(--cyan-glow),
+      var(--sunbeam-yellow),
+      var(--raspberry-plum)
+  );
+
+  --gradient-accent: linear-gradient(
+      135deg,
+      var(--golden-orange),
+      var(--lemon-lime)
+  );
+}
+
+
+
+.netflix-share-btn {
+  border-radius: 10px;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+}
+
+.netflix-share-btn.facebook { background: #1877F2; }
+.netflix-share-btn.twitter  { background: #1DA1F2; }
+.netflix-share-btn.whatsapp { background: #25D366; }
+
+
+
+
+
+
+
+/* Ticket Modal Overlay */
+.ticket-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.ticket-modal-overlay.show {
+    display: flex;
+}
+
+/* Ticket Modal */
+.ticket-modal {
+    background: #0f172a;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 420px;
+    color: #fff;
+    animation: slideUp 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    position: relative;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* Titles */
+.modal-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.modal-event-title {
+    color: #cbd5f5;
+    margin-bottom: 20px;
+}
+
+/* Quantity Controls */
+.ticket-controls label {
+    font-size: 14px;
+    color: #a5b4fc;
+}
+
+.ticket-quantity {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.ticket-quantity button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #312e81;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ticket-quantity input {
+    width: 60px;
+    text-align: center;
+    margin: 0 10px;
+    border-radius: 10px;
+    border: none;
+    padding: 6px;
+}
+
+/* Summary */
+.ticket-summary {
+    margin: 20px 0;
+    font-size: 15px;
+}
+
+/* Confirm Button */
+.confirm-booking-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #6366f1, #22d3ee);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.confirm-booking-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99,102,241,0.5);
+}
+
+/* Book Ticket Button */
+.book-ticket-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #22d3ee, #6366f1);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s ease;
+}
+
+.book-ticket-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(99,102,241,0.6);
 }

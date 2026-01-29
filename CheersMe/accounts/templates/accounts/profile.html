@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
+{% block title %}Profile | CheersMe{% endblock %}
+
 {% block content %}
+<div class="container">
+    <h2 class="mb-4">👤 My Profile</h2>
 
-<!-- Page-specific content here -->
+    <div class="card bg-dark text-white border-0 shadow-lg">
+        <div class="card-body">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
 
+            <a href="{% url 'accounts:logout' %}" class="btn btn-outline-danger">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,7 +1,29 @@
-
 {% extends 'base.html' %}
-{% block content %}
+{% block title %}My Tickets | CheersMe{% endblock %}
 
-    <h1>My Tickets Page</h1>
-    <p>This page is working correctly 🎉</p>
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">🎟 My Tickets</h2>
+
+    <div class="row">
+        {% for ticket in tickets %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white border-0 shadow-lg">
+                <div class="card-body">
+                    <h5>{{ ticket.event.title }}</h5>
+                    <p>Date: {{ ticket.event.start_date }}</p>
+                    <p>Seat: {{ ticket.seat_number }}</p>
+                    <a href="{% url 'tickets:ticket_detail' ticket.id %}" class="btn btn-outline-info btn-sm">
+                        View Ticket
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted py-5">
+            No tickets found 🎫
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
