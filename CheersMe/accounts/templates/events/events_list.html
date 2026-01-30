@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events | CheersMe</title>
+</head>
+<body>
+
+<h1>🎉 Upcoming Events</h1>
+
+{% for event in events %}
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <h2>{{ event.title }}</h2>
+        <p>{{ event.description }}</p>
+        <p><strong>Date:</strong> {{ event.start_date }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+    </div>
+{% empty %}
+    <p>No events available.</p>
+{% endfor %}
+
+</body>
+</html>

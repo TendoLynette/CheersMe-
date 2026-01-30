@@ -130,7 +130,6 @@ def run():
         order = Order.objects.create(
             event=event,
             user=user,
-            order_number=f"ORD-{event.id.hex[:8]}",
             status="paid",
             subtotal=Decimal("150000"),
             platform_fee=Decimal("5000"),

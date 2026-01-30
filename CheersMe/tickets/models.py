@@ -76,13 +76,13 @@ class Order(models.Model):
         return f"Order {self.order_number}"
     
     def generate_order_number(self):
-        return f"CM{self.created_at.strftime('%Y%m%d')}{str(self.id)[:8].upper()}"
-    
+     return f"CM{uuid.uuid4().hex[:12].upper()}"
+
     def save(self, *args, **kwargs):
         if not self.order_number:
-            super().save(*args, **kwargs)
-            self.order_number = self.generate_order_number()
+         self.order_number = self.generate_order_number()
         super().save(*args, **kwargs)
+
     
     class Meta:
         ordering = ['-created_at']
@@ -135,15 +135,17 @@ class Ticket(models.Model):
         buffer.close()
     
     def generate_ticket_number(self):
-        return f"TKT{self.created_at.strftime('%Y%m%d')}{str(self.id)[:8].upper()}"
+        return f"TKT{uuid.uuid4().hex[:12].upper()}"
+
     
     def save(self, *args, **kwargs):
-        if not self.ticket_number:
-            super().save(*args, **kwargs)
-            self.ticket_number = self.generate_ticket_number()
-        if not self.qr_code:
-            self.generate_qr_code()
-        super().save(*args, **kwargs)
+     if not self.ticket_number:
+        self.ticket_number = self.generate_ticket_number()
+
+     if not self.qr_code:
+        self.generate_qr_code()
+
+     super().save(*args, **kwargs)
     
     def __str__(self):
         return f"Ticket {self.ticket_number}"
