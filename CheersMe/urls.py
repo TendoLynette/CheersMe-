@@ -1,16 +1,18 @@
+from django.shortcuts import redirect
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path("", lambda request: redirect("accounts:login")), 
     path("admin/", admin.site.urls),
 
     # Dashboard
     path("dashboard/", include("CheersMe.dashboard.urls")),
 
     # Accounts
-    path("accounts/", include("CheersMe.accounts.urls")),
+    path("", include("CheersMe.accounts.urls")),
 
     # Events (ONLY here)
     path("events/", include("CheersMe.events.urls")),
@@ -20,8 +22,9 @@ urlpatterns = [
     path("notifications/", include("CheersMe.notifications.urls")),
     path("payments/", include("CheersMe.payments.urls")),
 
-    # Home page → redirect to events
-    path("", include("CheersMe.events.urls")),
+
+    
+    
 ]
 
 if settings.DEBUG:

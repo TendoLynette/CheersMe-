@@ -153,14 +153,11 @@ def events_list_view(request):
     return render(request, 'events/events_list.html', context)
 
 
-def event_detail_view(request, slug):
+def event_detail_view(request, id):
     """
     Display detailed information about a single event
     """
-    event = get_object_or_404(
-        Event.objects.select_related('category', 'organizer'),
-        slug=slug
-    )
+    event = get_object_or_404(Event, id=id)
     
     # Increment view count
     Event.objects.filter(pk=event.pk).update(views=F('views') + 1)

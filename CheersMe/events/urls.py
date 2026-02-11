@@ -1,10 +1,12 @@
 from django.urls import path
 from . import views
+from .views import event_detail_view
 
 app_name = "events"
 
 urlpatterns = [
     path("", views.events_list_view, name="list"),
+    path("event/<int:id>/", views.event_detail_view, name="detail"),
     path("search/", views.search_events_view, name="search"),
     path("nearby/", views.nearby_events_view, name="nearby"),
     path("category/<str:category_name>/", views.category_events_view, name="category"),
@@ -25,5 +27,6 @@ urlpatterns = [
     path("api/calendar/", views.event_calendar_data, name="calendar_data"),
 
     # LAST
-    path("<slug:slug>/", views.event_detail_view, name="detail"),
+    path("<int:id>/", event_detail_view, name="detail"),
+
 ]

@@ -7,14 +7,19 @@ urlpatterns = [
     # User Ticket Views
     path('my-tickets/', views.my_tickets_view, name='my_tickets'),
     path('ticket/<uuid:ticket_id>/', views.ticket_detail_view, name='detail'),
+    path('buy/<int:event_id>/', views.buy_ticket, name='buy_ticket'),
     path('ticket/<uuid:ticket_id>/download/', views.download_ticket_pdf, name='download_pdf'),
     path('ticket/<uuid:ticket_id>/email/', views.email_ticket_view, name='email_ticket'),
     
     # Order Views
     path('my-orders/', views.my_orders_view, name='my_orders'),
+    
     path('order/<uuid:order_id>/', views.order_detail_view, name='order_detail'),
     path('order/<uuid:order_id>/receipt/', views.download_order_receipt, name='download_receipt'),
-    path('order/<uuid:order_id>/cancel/', views.cancel_order_view, name='cancel_order'),
+    path('order/<uuid:order_id>/cancel/', views.cancel_order_view, name='cancel_order'), 
+    path("create/<slug:event_slug>/", views.create_order, name="create_order"),
+
+
     
     # Organizer Views (Ticket Validation)
     path('validate/', views.validate_ticket_view, name='validate'),

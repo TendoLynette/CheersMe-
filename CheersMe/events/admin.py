@@ -20,13 +20,16 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description', 'venue_name', 'city']
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at', 'views']
-    
+
+    # ✅ IMPORTANT — EXCLUDE gallery
+    exclude = ['gallery']
+
     fieldsets = (
         ('Basic Information', {
             'fields': ('organizer', 'title', 'slug', 'description', 'category', 'status', 'is_featured')
         }),
         ('Media', {
-            'fields': ('featured_image', 'gallery')
+            'fields': ('featured_image',)
         }),
         ('Location', {
             'fields': ('venue_name', 'address', 'city', 'latitude', 'longitude')

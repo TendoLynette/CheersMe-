@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from io import BytesIO
 import json
 
+from django.db import transaction
+from decimal import Decimal
 from .models import Ticket, Order, OrderItem, TicketType
 from CheersMe.events.models import Event
 from CheersMe.notifications.models import Notification
@@ -265,6 +267,22 @@ def email_ticket_view(request, ticket_id):
     return redirect('tickets:detail', ticket_id=ticket.id)
 
 
+@login_required
+def buy_ticket(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    order = Order.objects.create(
+        user=request.user,
+        event=event,
+        quantity=1,
+        total_price=event.ticket_price
+    )
+
+    return redirect('order_detail', order.id)
+
+
+
+
 # ====================================
 # ORDER VIEWS
 # ====================================
@@ -481,6 +499,66 @@ def download_order_receipt(request, order_id):
     response.write(pdf)
     
     return response
+
+@login_required
+@transaction.atomic
+def create_order(request, event_slug):
+    if request.method != "POST":
+        return redirect("events:detail", slug=event_slug)
+
+    event = get_object_or_404(Event, slug=event_slug)
+
+    ticket_type_id = request.POST.get("ticket_type")
+    quantity = int(request.POST.get("quantity", 1))
+
+    ticket_type = get_object_or_404(
+        TicketType,
+        id=ticket_type_id,
+        event=event,
+        is_active=True
+    )
+
+    # ✅ Validations
+    if quantity < 1:
+        return redirect("events:detail", slug=event_slug)
+
+    if quantity > ticket_type.remaining_tickets:
+        return redirect("events:detail", slug=event_slug)
+
+    if quantity > ticket_type.max_per_order:
+        return redirect("events:detail", slug=event_slug)
+
+    # 💰 Calculations (SERVER SIDE)
+    subtotal = ticket_type.price * quantity
+    platform_fee = subtotal * Decimal("0.02")  # 2%
+    total = subtotal + platform_fee
+
+    # 🧾 Create Order
+    order = Order.objects.create(
+        user=request.user,
+        event=event,
+        status="PENDING",
+        subtotal=subtotal,
+        platform_fee=platform_fee,
+        total_amount=total,
+        email=request.user.email,
+        phone=getattr(request.user, "phone", "")
+    )
+
+    # 📦 Create Order Item
+    OrderItem.objects.create(
+        order=order,
+        ticket_type=ticket_type,
+        quantity=quantity,
+        price_per_ticket=ticket_type.price
+    )
+
+    return redirect("tickets:order_detail", order_id=order.id)
+    
+
+
+
+
 
 
 @login_required
@@ -799,11 +877,3 @@ def order_status_api(request, order_id):
         }, status=404)
         
         
-from django.shortcuts import render
-from .models import Ticket
-
-def my_tickets_view(request):
-    # Example: get all tickets for the logged-in user
-    tickets = Ticket.objects.filter(user=request.user)
-    return render(request, 'tickets/my_tickets.html', {'tickets': tickets})
-    

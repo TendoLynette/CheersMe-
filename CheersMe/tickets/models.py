@@ -6,6 +6,10 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image
+from django.utils import timezone
+from django.db import transaction
+
+
 
 class TicketType(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_types')
@@ -46,47 +50,97 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
     
+    
+    
+    def mark_as_paid(self, payment_method="mock"):
+       if self.status == "paid":
+          return  # Prevent double processing
+
+       with transaction.atomic():
+        self.status = "paid"
+        self.payment_method = payment_method
+        self.paid_at = timezone.now()
+        self.save()
+
+        # Create tickets
+        for item in self.items.all():
+            for _ in range(item.quantity):
+                Ticket.objects.create(
+                    order=self,
+                    ticket_type=item.ticket_type,
+                    user=self.user,
+                    event=self.event,
+                    attendee_name=self.user.get_full_name() or self.user.username,
+                    attendee_email=self.email,
+                )
+
+            # Update ticket type counts
+            item.ticket_type.quantity_sold += item.quantity
+            item.ticket_type.save()
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='orders')
-    
-    # Order details
-    order_number = models.CharField(max_length=50, unique=True)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
-    
-    # Pricing
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='orders'
+    )
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='orders'
+    )
+
+    # Order identity
+    order_number = models.CharField(max_length=50, unique=True, editable=False)
+
+    status = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS,
+        default='pending'
+    )
+
+    # Pricing (calculated server-side)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-    platform_fee = models.DecimalField(max_digits=10, decimal_places=2)  # 2% commission
+    platform_fee = models.DecimalField(max_digits=10, decimal_places=2)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    # Payment
+
+    # Payment (future-proof)
     payment_method = models.CharField(max_length=50, blank=True)
-    payment_intent_id = models.CharField(max_length=200, blank=True)  # Stripe payment intent
-    
-    # Contact information
+    payment_intent_id = models.CharField(max_length=200, blank=True)
+
+    # Contact info at time of purchase
     email = models.EmailField()
     phone = models.CharField(max_length=20)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     paid_at = models.DateTimeField(null=True, blank=True)
-    
+
     def __str__(self):
         return f"Order {self.order_number}"
-    
+
     def generate_order_number(self):
-     return f"CM{uuid.uuid4().hex[:12].upper()}"
+        return f"CM-{uuid.uuid4().hex[:10].upper()}"
 
     def save(self, *args, **kwargs):
         if not self.order_number:
-         self.order_number = self.generate_order_number()
+            for _ in range(5):  # retry safety
+                candidate = self.generate_order_number()
+                if not Order.objects.filter(order_number=candidate).exists():
+                    self.order_number = candidate
+                    break
         super().save(*args, **kwargs)
 
-    
     class Meta:
         ordering = ['-created_at']
 
+
+            
+            
+            
 class Ticket(models.Model):
     TICKET_STATUS = [
         ('valid', 'Valid'),

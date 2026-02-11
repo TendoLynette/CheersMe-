@@ -8,12 +8,25 @@
 <h1>🎉 Upcoming Events</h1>
 
 {% for event in events %}
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <h2>{{ event.title }}</h2>
-        <p>{{ event.description }}</p>
-        <p><strong>Date:</strong> {{ event.start_date }}</p>
-        <p><strong>Location:</strong> {{ event.location }}</p>
-    </div>
+    <a href="{% url 'events:detail' event.id %}" style="text-decoration:none; color:inherit;">
+        <div style="
+            border:1px solid #ccc;
+            padding:15px;
+            margin:10px;
+            border-radius:8px;
+            transition:0.2s;
+            cursor:pointer;
+        " 
+        onmouseover="this.style.boxShadow='0 4px 10px rgba(0,0,0,0.1)'"
+        onmouseout="this.style.boxShadow='none'">
+
+            <h2>{{ event.title }}</h2>
+            <p>{{ event.description }}</p>
+            <p><strong>Date:</strong> {{ event.start_date }}</p>
+            <p><strong>Location:</strong> {{ event.location }}</p>
+
+        </div>
+    </a>
 {% empty %}
     <p>No events available.</p>
 {% endfor %}

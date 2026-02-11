@@ -1,203 +1,206 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CheersMe | Login</title>
 
-{% block title %}Login - CheersMe{% endblock %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-{% block extra_css %}
 <style>
-    .auth-container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-    
-    .auth-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 30px;
-        padding: 50px;
-        max-width: 500px;
-        width: 100%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-    }
-    
-    .auth-header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-    
-    .auth-header h1 {
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 10px;
-    }
-    
-    .auth-header p {
-        color: #666;
-        font-size: 1rem;
-    }
-    
-    .brand-logo {
-        font-size: 3rem;
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 20px;
-    }
-    
-    .form-control {
-        border-radius: 15px;
-        padding: 15px 20px;
-        border: 2px solid #e0e0e0;
-        font-size: 1rem;
-        transition: all 0.3s;
-    }
-    
-    .form-control:focus {
-        border-color: #4ECDC4;
-        box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
-    }
-    
-    .btn-login {
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-        border: none;
-        padding: 15px;
-        border-radius: 15px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        width: 100%;
-        margin-top: 20px;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    
-    .btn-login:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .divider {
-        text-align: center;
-        margin: 30px 0;
-        position: relative;
-    }
-    
-    .divider::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: #e0e0e0;
-    }
-    
-    .divider span {
-        background: white;
-        padding: 0 15px;
-        position: relative;
-        color: #999;
-    }
-    
-    .forgot-password {
-        text-align: center;
-        margin-top: 20px;
-    }
-    
-    .forgot-password a {
-        color: #4ECDC4;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    
-    .forgot-password a:hover {
-        text-decoration: underline;
-    }
-    
-    .signup-link {
-        text-align: center;
-        margin-top: 30px;
-        padding-top: 30px;
-        border-top: 1px solid #e0e0e0;
-    }
-    
-    .signup-link a {
-        color: #FF6B6B;
-        text-decoration: none;
-        font-weight: 600;
-    }
-    
-    .signup-link a:hover {
-        text-decoration: underline;
-    }
-</style>
-{% endblock %}
+* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
 
-{% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <div class="brand-logo">
-                <i class="fas fa-glass-cheers"></i>
-            </div>
-            <h1>Welcome Back!</h1>
-            <p>Login to discover amazing events around you</p>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: 
+        radial-gradient(circle at 15% 10%, #2aa4ff55, transparent 40%),
+        radial-gradient(circle at 85% 85%, #ffd40066, transparent 45%),
+        radial-gradient(circle at 50% 100%, #12002a, transparent 60%),
+        linear-gradient(135deg, #05091d, #1a0c3a, #05091d);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 400px;
+    padding: 40px;
+    color: white;
+    background: none;
+    box-shadow: none;
+}
+
+
+
+.glow-wrapper {
+    position: relative;
+}
+
+.glow-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: -80px;
+    background:
+        radial-gradient(circle at top left, #2aa4ff55, transparent 60%),
+        radial-gradient(circle at bottom right, #ffd40055, transparent 55%);
+    filter: blur(60px);
+    z-index: -1;
+}
+
+
+
+
+
+.login-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    backdrop-filter: blur(24px);
+    border-radius: 24px;
+    padding: 40px;
+    width: 400px;
+
+    box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.logo span:nth-child(1) { color: #7CFF6B; }
+.logo span:nth-child(2) { color: #00E5FF; }
+
+.subtitle {
+    text-align: center;
+    opacity: 0.7;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+    opacity: 0.8;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+.input-group input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+.forgot {
+    text-align: right;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.forgot a {
+    color: #00E5FF;
+    text-decoration: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(to right, #ffe600, #ffb000);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #ffd000;
+}
+
+
+.btn-primary {
+    background: linear-gradient(90deg, #ffd400, #ffb800);
+    color: #000;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+
+.signup {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.signup a {
+    color: #00E5FF;
+    text-decoration: none;
+    font-weight: 500;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+  <div class="glow-wrapper">
+    <div class="login-card">
+
+      <div class="logo">
+        <span>Cheers</span><span>Me</span>
+      </div>
+
+      <p class="subtitle">Welcome back!</p>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" name="username" placeholder="Enter your email" required>
         </div>
-        
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
-            
-            <div class="mb-3">
-                <label for="{{ form.username.id_for_label }}" class="form-label">
-                    <i class="fas fa-envelope"></i> Email Address
-                </label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="text-danger mt-2">
-                        {{ form.username.errors }}
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div class="mb-3">
-                <label for="{{ form.password.id_for_label }}" class="form-label">
-                    <i class="fas fa-lock"></i> Password
-                </label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    <div class="text-danger mt-2">
-                        {{ form.password.errors }}
-                    </div>
-                {% endif %}
-            </div>
-            
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-            
-            <button type="submit" class="btn btn-primary btn-login">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-        </form>
-        
-        <div class="forgot-password">
-            <a href="{% url 'accounts:password_reset' %}">
-                <i class="fas fa-key"></i> Forgot Password?
-            </a>
+
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required>
         </div>
-        
-        <div class="signup-link">
-            Don't have an account? 
-            <a href="{% url 'accounts:register' %}">
-                Sign Up <i class="fas fa-arrow-right"></i>
-            </a>
+
+        <div class="forgot">
+          <a href="#">Forgot password?</a>
         </div>
+
+        <button class="btn btn-primary">Sign In</button>
+
+        <div class="signup">
+          Don't have an account?
+          <a href="{% url 'accounts:register' %}">Sign up</a>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
-{% endblock %}
+
+
+</body>
+</html>

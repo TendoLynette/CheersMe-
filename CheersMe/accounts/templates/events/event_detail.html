@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ event.title }}</h2>
+
+    <p class="text-muted">{{ event.date }}</p>
+
+    <p>{{ event.description }}</p>
+
+    <p><strong>Location:</strong> {{ event.location }}</p>
+    <p><strong>Price:</strong> UGX {{ event.ticket_price }}</p>
+
+   <a href="{% url 'buy_ticket' event.id %}" class="btn btn-primary mt-3">
+    Buy Ticket 🎟️
+   </a>
+
+
+</div>
+<form method="POST" action="{% url 'tickets:create_order' event.slug %}">
+    {% csrf_token %}
+
+    <select name="ticket_type" required>
+        {% for type in event.ticket_types.all %}
+            <option value="{{ type.id }}">
+                {{ type.name }} – UGX {{ type.price }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <input type="number" name="quantity" value="1" min="1">
+
+    <button type="submit" class="btn btn-primary mt-3">
+        Buy Ticket 🎟️
+    </button>
+</form>
+
+{% endblock %}
