@@ -9,7 +9,7 @@ Pillow==10.1.0
 
 # Forms
 django-crispy-forms==2.1
-crispy-bootstrap4==2.0
+crispy-bootstrap4>=2024.1
 
 # Environment Variables
 python-decouple==3.8
